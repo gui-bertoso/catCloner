@@ -4,7 +4,7 @@ Save pages and browsing sequences as offline ZIPs. A small Manifest V3 extension
 
 Previously named **catCloner**. The GitHub repository is now **[duck-cloner](https://github.com/gui-bertoso/duck-cloner)**.
 
-![Snapshot interface](snapshot-preview.png)
+![Snapshot interface](snapshot-duck-preview.png)
 
 ## Two ways to capture
 
