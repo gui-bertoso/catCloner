@@ -1,31 +1,21 @@
-CUSTOM EVALUATION LICENSE
+MIT License
 
-Copyright (c) 2026 Guilherme da Silva Bertoso
+Copyright (c) 2026 Guilherme da Silva Bertoso (patoLizo)
 
-Permission is granted to view and inspect this software solely for
-evaluation, review, and demonstration purposes.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-You may:
-- Review the source code for the purpose of evaluating the author's
-  technical skills.
-- Run the software locally for testing and demonstration purposes.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-You may not:
-- Copy, modify, distribute, publish, sell, sublicense, or use this
-  software or any part of it in commercial projects without explicit
-  written permission from the copyright holder.
-- Use this software, source code, algorithms, designs, or concepts to
-  create competing products or services without authorization.
-- Remove copyright notices or attribution from the software.
-
-Commercial use, redistribution, or transfer of rights requires a
-separate written agreement with the copyright holder.
-
-This software is provided "AS IS", without warranty of any kind.
-
-By accessing this repository, you acknowledge that the source code
-remains the exclusive property of the copyright holder and that access
-to the repository does not grant ownership or usage rights.
-
-For licensing inquiries, contact:
-gui.bertoso.dev@gmail.com
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

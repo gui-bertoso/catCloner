@@ -26,19 +26,10 @@ This project demonstrates the development of a custom web scraping solution focu
 - Web scraping techniques
 - Data processing
 
-## Project Purpose
-
-This repository is provided as a technical portfolio demonstration to showcase software development skills, problem solving, and experience with browser automation.
-
-The source code is not licensed for commercial use, redistribution, or reuse without authorization.
-
 ## License
 
-This project uses a custom evaluation license.
-
-The source code may only be accessed for review and evaluation purposes.
-
-Commercial usage requires explicit permission from the copyright holder.
+The author's code is available under the [MIT License](LICENSE).
+Third-party dependencies retain their own licenses.
 
 ## Contact
 
