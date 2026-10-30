@@ -7,7 +7,7 @@
             let bestSource = null;
             for (const attribute of attributes) {
                 const value = element.getAttribute(attribute);
-                if (value && !value.startsWith('data:') && !value.startsWith('blob:')) {
+                if (value && !value.startsWith('date:') && !value.startsWith('blob:')) {
                     bestSource = value;
                     break;
                 }

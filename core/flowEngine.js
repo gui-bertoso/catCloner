@@ -80,7 +80,7 @@
             snapshot.querySelectorAll('base').forEach(element => element.remove());
             return { title: document.title, productTitle: document.querySelector('h1,[itemprop="name"]')?.textContent?.trim() || '', url: location.href, html: snapshot.documentElement.outerHTML, assets: Array.from(assets.values()), createdAt: new Date().toISOString() };
         }});
-        if (!result?.result) throw new Error('Não foi possível capturar esta etapa.');
+        if (!result?.result) throw new Error('Could not capture this step.');
         assertActive();
         const steps = await list();
         const step = { ...result.result, order: steps.length + 1 };
@@ -145,7 +145,7 @@
     async function finish() {
         assertActive();
         const steps = (await list()).sort((a, b) => a.order - b.order);
-        if (!steps.length) throw new Error('Capture pelo menos uma etapa antes de finalizar.');
+        if (!steps.length) throw new Error('Capture at least one step before finishing.');
         await CatClonerZipEngine.ensureDocument();
         await CatClonerZipEngine.send({ action: 'zipStart' });
         for (let index = 0; index < steps.length; index++) {
@@ -193,7 +193,7 @@
                 const response = await fetchWithRetry(asset.originalUrl);
                 if (asset.type === 'css') {
                     const contentType = response.headers.get('content-type') || '';
-                    if (/text\/html/i.test(contentType)) throw new Error('Servidor retornou HTML no lugar do CSS');
+                    if (/text\/html/i.test(contentType)) throw new Error('Server returned HTML instead of CSS');
                     let css = await response.text();
                     css = css.replace(/@import\s+(?:url\(\s*)?['"]?([^'"\)\s;]+)['"]?\s*\)?\s*;/g, (match, value) => {
                         try {
@@ -220,7 +220,7 @@
         assertActive();
         await CatClonerZipEngine.send({ action: 'zipAddFile', path: 'flow-report.json', data: JSON.stringify({ engineVersion: CatClonerCore.version, steps: steps.map(({ title, url, order }) => ({ title, url: CatClonerPrivacyEngine.sanitizeUrl(url), order })), assets: assets.size, failures: failures.map(failure => ({ ...failure, url: CatClonerPrivacyEngine.sanitizeUrl(failure.url) })) }, null, 2) });
         const result = await CatClonerZipEngine.send({ action: 'zipFinalize', filename: 'catCloner/visual-flow.zip' });
-        if (!result.blobUrl) throw new Error('O compactador não retornou o fluxo.');
+        if (!result.blobUrl) throw new Error('The compression engine did not return the flow.');
         await chrome.downloads.download({ url: result.blobUrl, filename: 'catCloner/visual-flow.zip', conflictAction: 'uniquify', saveAs: false });
         return { steps: steps.length, failures: failures.length };
     }

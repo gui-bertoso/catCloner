@@ -2,85 +2,85 @@
 
 ## 4.3.2 — 2026-08-06
 
-### Alterações
+### Changes
 
-- Removido o controlador flutuante Anterior/Próxima dos Fluxos Visuais exportados.
-- A navegação agora acontece somente pelos cards, links, formulários e botões naturais das páginas.
-- A seleção de produto continua sendo propagada silenciosamente entre as etapas.
+- Removed the floating Previous/Next controller from exported Visual Flows.
+- Navigation now uses the pages' own cards, links, forms and buttons.
+- Product selection continues to propagate silently between steps.
 
 ## 4.3.1 — 2026-08-06
 
-### Correções
+### Fixes
 
-- O painel de etapas não aparece mais quando o modo Snapshot está selecionado.
-- A seleção entre Snapshot e Fluxo Visual fica salva ao fechar o popup.
-- Ao reabrir o popup durante uma gravação, o modo Fluxo e sua lista são restaurados.
+- The step panel no longer appears in Snapshot mode.
+- The Snapshot/Visual Flow selection persists when the popup closes.
+- Reopening the popup during recording restores Flow mode and its step list.
 
 ## 4.3.0 — 2026-08-06
 
-### Novidades
+### Added
 
-- Cancelamento do Snapshot pelo popup ou pelo overlay flutuante.
-- Interrupção da descoberta de páginas, processamento de CSS, downloads e compactação.
-- Requisições de rede ativas são abortadas imediatamente.
-- Fluxo Visual pode ser cancelado e completamente limpo.
-- Etapas individuais podem ser excluídas antes da geração do ZIP.
-- Etapas restantes são renumeradas depois de uma exclusão.
-- Finalização e cancelamento esperam operações concorrentes terminarem com segurança.
+- Snapshot cancellation through the popup or floating overlay.
+- Cancellation of page discovery, CSS processing, downloads and compression.
+- Active network requests are aborted immediately.
+- Visual Flows can be canceled and fully cleared.
+- Individual steps can be removed before ZIP generation.
+- Remaining steps are renumbered after removal.
+- Finalization and cancellation safely wait for concurrent operations.
 
 ## 4.2.0 — 2026-08-06
 
-### Novidades
+### Added
 
-- Gravação automática do Fluxo Visual vinculada à aba atual.
-- Captura da tela inicial assim que o DOM estabiliza.
-- Reinstalação automática do observador após cada navegação completa.
-- Detecção de mudanças de rota e estados estáveis em aplicações SPA.
-- Estado da gravação persistido mesmo quando o popup fecha.
-- Deduplicação por impressão digital da página.
-- Finalização aguarda a última captura em andamento antes de gerar o ZIP.
-- Fechar a aba gravada encerra a sessão automaticamente.
+- Automatic Visual Flow recording tied to the current tab.
+- Initial capture once the DOM stabilizes.
+- Observer reinstallation after full-page navigation.
+- Route-change and stable-state detection in single-page applications.
+- Recording state persists when the popup closes.
+- Page-fingerprint deduplication.
+- Finalization waits for the last capture before generating the ZIP.
+- Closing the recorded tab automatically ends the session.
 
 ## 4.1.0 — 2026-08-06
 
-### Novidades
+### Added
 
-- Catálogos do Fluxo Visual podem encaminhar múltiplos cards ao modelo local de produto.
-- A seleção transporta título, imagem e preço pelas etapas seguintes usando somente parâmetros locais.
-- Navegação Anterior e Próxima preserva o produto selecionado.
-- Formulários simulados mantêm a seleção ao avançar para garantia e checkout.
-- Heurísticas genéricas reconhecem rotas de produtos em diferentes tipos de loja.
+- Visual Flow catalogs can route multiple cards to a local product template.
+- Selection carries the title, image and price through later steps using local parameters only.
+- Previous/Next navigation preserves the selected product.
+- Simulated forms retain selection through warranty and checkout steps.
+- Generic heuristics recognize product routes across different store layouts.
 
 ## 4.0.1 — 2026-08-06
 
-### Correções
+### Fixes
 
-- Novo motor de privacidade para mascarar e-mail, telefone, CPF, CNPJ, CEP e números de cartão renderizados.
-- Substituição de blocos simples de endereço e nome de usuário em Fluxos Visuais.
-- Remoção de tokens, sessões, identificadores de checkout e rastreamento das URLs do relatório.
-- Relatórios de falha agora recebem a mesma limpeza de URLs sensíveis.
+- New privacy engine masks rendered email, phone, Brazilian CPF/CNPJ identifiers, postal codes and card numbers.
+- Simple address and username blocks are replaced in Visual Flows.
+- Report URLs are stripped of tokens, sessions, checkout IDs and tracking parameters.
+- Failure reports receive the same sensitive-URL sanitization.
 
 ## 4.0.0 — 2026-08-06
 
-Primeiro lançamento estável da arquitetura modular do catCloner.
+First stable release of catCloner's modular architecture.
 
-### Novidades
+### Added
 
-- Motores separados para HTML, CSS, imagens, links, segurança de JavaScript e vídeo.
-- Captura de páginas e subpáginas internas com limite e profundidade configuráveis.
-- Priorização de produtos, artigos e páginas de detalhes.
-- Preservação de imagens responsivas e remoção de CSP incompatível com arquivos locais.
-- Retentativas para recursos e relatório detalhado de falhas.
-- Overlay compacto com terminal de eventos reais e progresso.
-- Pausa automática para resolução manual de CAPTCHA.
-- Limpeza de formulários, campos ocultos e conteúdo editável.
-- Fluxo Visual persistente com várias telas no mesmo ZIP.
-- Navegação local entre etapas, formulários simulados, botões, abas e acordeões seguros.
-- Interface redesenhada em português.
+- Separate engines for HTML, CSS, images, links, JavaScript safety and video.
+- Page and internal-subpage capture with configurable limits and depth.
+- Prioritization of products, articles and detail pages.
+- Responsive-image preservation and removal of CSP incompatible with local files.
+- Resource retries and detailed failure reports.
+- Compact overlay with a real-event terminal and progress display.
+- Automatic pause for manual CAPTCHA completion.
+- Sanitization of forms, hidden fields and editable content.
+- Persistent, multi-screen Visual Flows in a single ZIP.
+- Local navigation between steps, simulated forms, buttons, tabs and safe accordions.
+- Redesigned interface, originally introduced in Portuguese.
 
-### Limitações conhecidas
+### Known limitations
 
-- Aplicações dependentes de APIs, login, DRM ou servidor não funcionam integralmente offline.
-- Frames de pagamento e scripts originais são removidos deliberadamente.
-- Sites podem alterar sua estrutura e exigir ajustes futuros.
-- Recursos protegidos, temporários ou bloqueados por anti-bot podem não ser baixados.
+- Applications requiring APIs, login, DRM or servers do not work completely offline.
+- Payment frames and original scripts are deliberately removed.
+- Site structure changes may require future adjustments.
+- Protected, temporary or anti-bot-blocked resources may not be downloadable.

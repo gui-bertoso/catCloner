@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
         if (tab) {
             currentTab = tab;
-            titleDisplay.textContent = tab.title || 'Página sem título';
+            titleDisplay.textContent = tab.title || 'Untitled page';
             urlDisplay.textContent = tab.url || '';
             try {
                 const hostname = new URL(tab.url).hostname.replace(/^www\./, '');
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             } catch (_) {}
         }
     } catch (error) {
-        console.error('Erro ao buscar aba ativa:', error);
+        console.error('Error fetching the active tab:', error);
     }
 
     try {
@@ -58,35 +58,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     flowStartBtn.addEventListener('click', async () => {
         if (!currentTab) return;
-        await runFlowAction(flowStartBtn, 'flowStart', 'Gravação iniciada.', { tabId: currentTab.id });
+        await runFlowAction(flowStartBtn, 'flowStart', 'Recording started.', { tabId: currentTab.id });
     });
     flowCaptureBtn.addEventListener('click', async () => {
         if (!currentTab) return;
-        await runFlowAction(flowCaptureBtn, 'flowCapture', 'Tela capturada.', { tabId: currentTab.id });
+        await runFlowAction(flowCaptureBtn, 'flowCapture', 'Screen captured.', { tabId: currentTab.id });
     });
-    flowFinishBtn.addEventListener('click', async () => runFlowAction(flowFinishBtn, 'flowFinish', 'Fluxo baixado.'));
+    flowFinishBtn.addEventListener('click', async () => runFlowAction(flowFinishBtn, 'flowFinish', 'Flow downloaded.'));
     flowResetBtn.addEventListener('click', async () => {
-        if (!confirm('Cancelar a gravação e apagar todas as etapas?')) return;
-        await runFlowAction(flowResetBtn, 'flowReset', 'Sessão limpa.');
+        if (!confirm('Cancel recording and delete all steps?')) return;
+        await runFlowAction(flowResetBtn, 'flowReset', 'Session cleared.');
     });
     flowSteps.addEventListener('click', async event => {
         const button = event.target.closest('[data-delete-step]');
         if (!button) return;
-        await runFlowAction(button, 'flowDelete', 'Excluída.', { stepId: Number(button.dataset.deleteStep) });
+        await runFlowAction(button, 'flowDelete', 'Deleted.', { stepId: Number(button.dataset.deleteStep) });
     });
     cancelCloneBtn.addEventListener('click', async () => {
         if (!currentTab) return;
         cancelCloneBtn.disabled = true;
-        cancelCloneBtn.textContent = 'Cancelando…';
-        statusText.textContent = 'Cancelando captura e downloads…';
+        cancelCloneBtn.textContent = 'Canceling…';
+        statusText.textContent = 'Canceling capture and downloads…';
         try { await send({ action: 'cancelClone', tabId: currentTab.id }); }
-        catch (error) { alert(`Não foi possível cancelar: ${error.message}`); resetUI(); }
+        catch (error) { alert(`Could not cancel: ${error.message}`); resetUI(); }
     });
 
     cloneBtn.addEventListener('click', () => {
         if (!currentTab) return;
         if (/^(chrome|edge):\/\//.test(currentTab.url || '')) {
-            alert('Não é possível clonar páginas internas do navegador.');
+            alert('Internal browser pages cannot be cloned.');
             return;
         }
 
@@ -100,10 +100,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }, response => {
             if (chrome.runtime.lastError) {
-                alert(`Erro ao comunicar com o motor: ${chrome.runtime.lastError.message}`);
+                alert(`Engine communication error: ${chrome.runtime.lastError.message}`);
                 resetUI();
             } else if (response && !response.success) {
-                alert(`Erro no processo: ${response.error}`);
+                alert(`Process error: ${response.error}`);
                 resetUI();
             }
         });
@@ -118,11 +118,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             progressPercent.textContent = `${Math.round(progress)}%`;
             statusBox.classList.toggle('captcha', captcha);
             statusHint.textContent = captcha
-                ? 'Resolva a verificação na página; continuaremos automaticamente.'
-                : 'Mantenha a aba aberta durante o processo.';
+                ? 'Complete verification on the page; capture will resume automatically.'
+                : 'Keep the tab open during the process.';
             if (progress === 100) setTimeout(() => window.close(), 2000);
         } else if (request.action === 'cloneFailed') {
-            alert(`Erro no processo: ${request.error}`);
+            alert(`Process error: ${request.error}`);
             resetUI();
         } else if (request.action === 'cloneCancelled') {
             resetUI();
@@ -134,8 +134,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     function setRunning(running) {
         cloneBtn.disabled = running;
         statusBox.classList.toggle('hidden', !running);
-        buttonTitle.textContent = running ? 'Clonando…' : 'Clonar página';
-        buttonSubtitle.textContent = running ? 'Não feche esta aba' : 'Gerar pacote offline em ZIP';
+        buttonTitle.textContent = running ? 'Cloning…' : 'Clone page';
+        buttonSubtitle.textContent = running ? 'Do not close this tab' : 'Generate offline ZIP package';
     }
 
     function setMode(mode, persist = true) {
@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function send(message) {
         return new Promise((resolve, reject) => chrome.runtime.sendMessage(message, response => {
             if (chrome.runtime.lastError) reject(new Error(chrome.runtime.lastError.message));
-            else if (!response?.success) reject(new Error(response?.error || 'O motor não respondeu.'));
+            else if (!response?.success) reject(new Error(response?.error || 'The engine did not respond.'));
             else resolve(response);
         }));
     }
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             button.textContent = successText;
             setTimeout(() => { button.textContent = original; }, 1200);
         } catch (error) {
-            alert(`Erro no fluxo visual: ${error.message}`);
+            alert(`Visual flow error: ${error.message}`);
             button.textContent = original;
         } finally { button.disabled = false; }
     }
@@ -177,11 +177,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const response = await send({ action: 'flowStatus' });
             const steps = response.steps || [];
-            flowRecorderState.textContent = response.recording ? '● Gravando' : 'Parado';
+            flowRecorderState.textContent = response.recording ? '● Recording' : 'Stopped';
             flowRecorderState.classList.toggle('recording', Boolean(response.recording));
             flowSteps.innerHTML = steps.length
-                ? steps.sort((a, b) => a.order - b.order).map(step => `<div class="flow-step"><b>${step.order}</b><span title="${escapeHtml(step.title)}">${escapeHtml(step.title || 'Etapa sem título')}</span><button type="button" data-delete-step="${step.id}" title="Excluir etapa">×</button></div>`).join('')
-                : '<p>Nenhuma etapa capturada.</p>';
+                ? steps.sort((a, b) => a.order - b.order).map(step => `<div class="flow-step"><b>${step.order}</b><span title="${escapeHtml(step.title)}">${escapeHtml(step.title || 'Untitled step')}</span><button type="button" data-delete-step="${step.id}" title="Delete step">×</button></div>`).join('')
+                : '<p>No steps captured.</p>';
             flowFinishBtn.disabled = steps.length === 0;
         } catch (error) {
             flowSteps.innerHTML = `<p>${escapeHtml(error.message)}</p>`;
@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         progressBar.style.width = '0%';
         progressPercent.textContent = '0%';
         cancelCloneBtn.disabled = false;
-        cancelCloneBtn.textContent = 'Cancelar';
+        cancelCloneBtn.textContent = 'Cancel';
     }
 
     function clampNumber(value, min, max, fallback) {

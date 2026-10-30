@@ -35,7 +35,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 chrome.runtime.sendMessage({ action: 'cloneCancelled' }).catch(() => {});
                 return;
             }
-            console.error("Falha no processo de clonagem:", err);
+            console.error("Cloning failed:", err);
             chrome.runtime.sendMessage({
                 action: "cloneFailed",
                 error: err instanceof Error ? err.message : String(err)
@@ -95,7 +95,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             const result = await CatClonerFlowEngine.finish();
             return { success: true, ...result, recording: false };
         }
-        throw new Error('Ação de fluxo desconhecida.');
+        throw new Error('Unknown flow action.');
     })().then(sendResponse).catch(error => sendResponse({ success: false, error: error instanceof Error ? error.message : String(error) }));
     return true;
 });
@@ -152,7 +152,7 @@ async function captureAutomaticFlowStep(tabId, fingerprint) {
         chrome.runtime.sendMessage({ action: 'flowStepCaptured', step: { id: step.id, order: step.order, title: step.title, url: step.url } }).catch(() => {});
     })().catch(async error => {
         await setFlowRecorderState({ lastFingerprint: null });
-        console.warn('Falha na captura automática do fluxo:', error);
+        console.warn('Automatic flow capture failed:', error);
     }).finally(() => { flowAutoCapturePromise = null; });
     return flowAutoCapturePromise;
 }
@@ -329,10 +329,10 @@ async function showCloneOverlayV4(tabId) {
         const shadow = host.attachShadow({ mode: 'open' });
         shadow.innerHTML = `<style>
         :host{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}.card{width:min(340px,calc(100vw - 36px));padding:14px;border:1px solid rgba(255,130,98,.28);border-radius:16px;background:rgba(9,11,16,.94);color:#f7f8fb;box-shadow:0 18px 55px rgba(0,0,0,.42),inset 0 1px rgba(255,255,255,.06);backdrop-filter:blur(18px);animation:enter .25s ease-out}.head,.brand,.stage,.controls{display:flex;align-items:center}.head{justify-content:space-between;gap:12px}.controls{gap:8px}.brand{gap:8px;font-size:12px;font-weight:800}.cat{font-size:19px;animation:bob .8s ease-in-out infinite alternate}.badge{padding:3px 6px;border:1px solid rgba(255,115,92,.25);border-radius:99px;color:#ff927f;font-size:7px;text-transform:uppercase}.percent{color:#ff927f;font:800 11px ui-monospace,monospace}.cancel{pointer-events:auto;padding:4px 7px;border:1px solid rgba(255,115,92,.3);border-radius:7px;background:transparent;color:#ff927f;font:700 8px system-ui;cursor:pointer}.stage{justify-content:space-between;margin:11px 0 7px}.stage strong{max-width:260px;overflow:hidden;color:#dce0e8;font-size:10px;text-overflow:ellipsis;white-space:nowrap}.live{width:6px;height:6px;border-radius:50%;background:#5bd6a2;box-shadow:0 0 8px #5bd6a2;animation:pulse 1s infinite}.track{height:4px;overflow:hidden;border-radius:99px;background:rgba(255,255,255,.08)}.bar{width:2%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#ff735c,#ffb45f);transition:width .25s}.terminal{height:92px;margin-top:10px;overflow:hidden;padding:8px 9px;border:1px solid rgba(255,255,255,.065);border-radius:10px;background:#06080c;font:9px/1.55 ui-monospace,Consolas,monospace}.line{overflow:hidden;color:#788293;text-overflow:ellipsis;white-space:nowrap;animation:linein .2s ease-out}.tag{color:#ff8c77}.ok{color:#5bd6a2}.cursor{display:inline-block;width:5px;height:10px;margin-left:3px;background:#ff8c77;vertical-align:-2px;animation:blink .8s steps(1) infinite}@keyframes enter{from{opacity:0;transform:translateY(8px) scale(.98)}}@keyframes linein{from{opacity:0;transform:translateY(4px)}}@keyframes bob{to{transform:translateY(-2px)}}@keyframes pulse{50%{opacity:.35}}@keyframes blink{50%{opacity:0}}@media(prefers-reduced-motion:reduce){.card,.cat,.live,.cursor,.line{animation:none}}
-        </style><section class="card" role="status" aria-live="polite"><div class="head"><div class="brand"><span class="cat">🐱</span><span>catCloner</span><span class="badge">4.0</span></div><div class="controls"><span class="percent">2%</span><button class="cancel" type="button">Cancelar</button></div></div><div class="stage"><strong>Inicializando motores modulares</strong><span class="live"></span></div><div class="track"><div class="bar"></div></div><div class="terminal"><div class="lines"><div class="line"><span class="tag">[CORE]</span> sessão iniciada <span class="ok">OK</span></div><div class="line"><span class="tag">[SAFE]</span> proteção de dados ativa <span class="ok">OK</span></div><div class="line current"><span class="tag">[SCAN]</span> analisando página<span class="cursor"></span></div></div></div></section>`;
+        </style><section class="card" role="status" aria-live="polite"><div class="head"><div class="brand"><span class="cat">🐱</span><span>catCloner</span><span class="badge">4.0</span></div><div class="controls"><span class="percent">2%</span><button class="cancel" type="button">Cancel</button></div></div><div class="stage"><strong>Initializing modular engines</strong><span class="live"></span></div><div class="track"><div class="bar"></div></div><div class="terminal"><div class="lines"><div class="line"><span class="tag">[CORE]</span> session started <span class="ok">OK</span></div><div class="line"><span class="tag">[SAFE]</span> data protection active <span class="ok">OK</span></div><div class="line current"><span class="tag">[SCAN]</span> analyzing page<span class="cursor"></span></div></div></div></section>`;
         (document.body || document.documentElement).appendChild(host);
         shadow.querySelector('.cancel').addEventListener('click', () => {
-            shadow.querySelector('.cancel').textContent = 'Cancelando…';
+            shadow.querySelector('.cancel').textContent = 'Canceling…';
             chrome.runtime.sendMessage({ action: 'cancelClone' }).catch(() => {});
         });
     }});
@@ -343,7 +343,7 @@ async function updateCloneOverlay(tabId, text, progress) {
         const shadow = document.getElementById('catcloner-working-overlay')?.shadowRoot;
         if (!shadow) return;
         const safeProgress = Math.max(0, Math.min(100, Number(value) || 0));
-        shadow.querySelector('.stage strong').textContent = message || 'Processando página';
+        shadow.querySelector('.stage strong').textContent = message || 'Processing page';
         shadow.querySelector('.percent').textContent = `${Math.round(safeProgress)}%`;
         shadow.querySelector('.bar').style.width = `${Math.max(2, safeProgress)}%`;
         const firstWord = String(message || '').split(/[\s:]/)[0].toLowerCase();
@@ -357,7 +357,7 @@ async function updateCloneOverlay(tabId, text, progress) {
         completed.textContent = `[${tag}] ${label} OK`;
         lines.appendChild(completed);
         const current = document.createElement('div'); current.className = 'line current';
-        current.innerHTML = '<span class="tag">[NEXT]</span> processando<span class="cursor"></span>';
+        current.innerHTML = '<span class="tag">[NEXT]</span> processing<span class="cursor"></span>';
         lines.appendChild(current);
         while (lines.children.length > 6) lines.firstElementChild.remove();
     }}).catch(() => {});
@@ -385,7 +385,7 @@ async function runClonerCore(tabId, requestedOptions = {}) {
         if (!isCaptchaUrl(tab.url)) return false;
 
         await hideCloneOverlay(targetTabId).catch(() => {});
-        notifyPopup("CAPTCHA detectado. Resolva-o na aba da Shopee para continuar...", 4);
+        notifyPopup("CAPTCHA detected. Complete it in the Shopee tab to continue...", 4);
         await chrome.tabs.update(targetTabId, { active: true }).catch(() => {});
 
         // Keep the cloning operation alive while the user completes Shopee's
@@ -396,7 +396,7 @@ async function runClonerCore(tabId, requestedOptions = {}) {
             if (!isCaptchaUrl(tab.url)) break;
         }
 
-        notifyPopup("CAPTCHA concluído. Aguardando a página carregar...", 5);
+        notifyPopup("CAPTCHA completed. Waiting for the page to load...", 5);
         const deadline = Date.now() + 30000;
         while (Date.now() < deadline) {
             tab = await chrome.tabs.get(targetTabId);
@@ -408,7 +408,7 @@ async function runClonerCore(tabId, requestedOptions = {}) {
     }
 
     assertNotCancelled();
-    notifyPopup("Iniciando descoberta de ativos dinâmicos...", 2);
+    notifyPopup("Starting dynamic asset discovery...", 2);
 
     const extractionFunc = async () => {
         const assetMap = new Map(); // originalUrl -> { filename, type }
@@ -576,7 +576,7 @@ async function runClonerCore(tabId, requestedOptions = {}) {
                         if (absUrl.startsWith('http') && !absUrl.startsWith(origin)) return absUrl;
                         if (isLocal(url)) return url;
 
-                        console.warn('catCloner: Recurso remoto detectado (não clonado) ->', absUrl);
+                        console.warn('catCloner: Remote resource detected (not cloned) ->', absUrl);
                         return new URL(url, origin).href;
                     } catch (e) {
                         return url;
@@ -871,12 +871,12 @@ async function runClonerCore(tabId, requestedOptions = {}) {
     });
 
     if (!injectionResults || !injectionResults[0] || !injectionResults[0].result) {
-        throw new Error("Falha ao extrair dados da página.");
+        throw new Error("Could not extract page data.");
     }
 
     const mainData = injectionResults[0].result;
     if (isCaptchaUrl(mainData.url)) {
-        throw new Error("A Shopee bloqueou a captura e exibiu uma verificação de tráfego. Entre na sua conta, conclua a verificação no navegador e tente novamente.");
+        throw new Error("Shopee blocked capture and displayed traffic verification. Sign in, complete verification in your browser and try again.");
     }
     mainData.filename = "index.html";
     const allPages = [mainData];
@@ -958,7 +958,7 @@ async function runClonerCore(tabId, requestedOptions = {}) {
     }
 
     enqueueLinks(mainData.links, 1);
-    notifyPopup(`${pageQueue.length} produto(s) encontrado(s).`, 5);
+    notifyPopup(`${pageQueue.length} product(s) found.`, 5);
     while (pageQueue.length > 0 && allPages.length < pageLimit) {
             assertNotCancelled();
             const nextPage = pageQueue.shift();
@@ -966,7 +966,7 @@ async function runClonerCore(tabId, requestedOptions = {}) {
             if (visitedPages.has(nextPage.url)) continue;
             visitedPages.add(nextPage.url);
             const link = nextPage.url;
-            notifyPopup(`Explorando página ${allPages.length + 1}/${pageLimit}...`, 5 + Math.round((allPages.length / pageLimit) * 20));
+            notifyPopup(`Exploring page ${allPages.length + 1}/${pageLimit}...`, 5 + Math.round((allPages.length / pageLimit) * 20));
             let subTab = null;
             try {
                 const isShopeeProduct = /shopee\./i.test(link) && /-i\.\d+\.\d+/i.test(link);
@@ -992,7 +992,7 @@ async function runClonerCore(tabId, requestedOptions = {}) {
                     readiness = await waitForRenderedPage(subTab.id, link);
                 }
                 if (!readiness.ready) {
-                    throw new Error(`A página não renderizou conteúdo suficiente (${readiness.textLength || 0} caracteres, ${readiness.imageCount || 0} imagens).`);
+                    throw new Error(`The page did not render enough content (${readiness.textLength || 0} characters, ${readiness.imageCount || 0} images).`);
                 }
                 // Allow late price blocks and image galleries to finish hydrating.
                 await new Promise(resolve => setTimeout(resolve, isShopeeProduct ? 2500 : 1000));
@@ -1008,7 +1008,7 @@ async function runClonerCore(tabId, requestedOptions = {}) {
                     enqueueLinks(subData.links, nextPage.depth + 1);
                 }
             } catch (e) {
-                console.warn("Erro ao clonar link:", link, e);
+                console.warn("Error cloning link:", link, e);
                 pageFailures.push({
                     url: link,
                     error: e instanceof Error ? e.message : String(e)
@@ -1021,7 +1021,7 @@ async function runClonerCore(tabId, requestedOptions = {}) {
             }
     }
 
-    notifyPopup("Consolidando ativos e rotas...", 30);
+    notifyPopup("Consolidating assets and routes...", 30);
     
     const combinedAssetLookup = {};
     allPages.forEach(p => {
@@ -1097,7 +1097,7 @@ async function runClonerCore(tabId, requestedOptions = {}) {
                 cloneAbortControllers.get(tabId)?.delete(controller);
             }
         }
-        throw lastError || new Error('Falha de rede');
+        throw lastError || new Error('Network failure');
     }
 
     async function processDeep(asset, depth = 0) {
@@ -1107,7 +1107,7 @@ async function runClonerCore(tabId, requestedOptions = {}) {
         try {
             const response = await fetchWithRetry(asset.originalUrl);
             const contentType = response.headers.get('content-type') || '';
-            if (/text\/html/i.test(contentType)) throw new Error('Servidor retornou HTML no lugar do CSS');
+            if (/text\/html/i.test(contentType)) throw new Error('Server returned HTML instead of CSS');
             let content = await response.text();
 
             if (asset.type === 'css') {
@@ -1137,7 +1137,7 @@ async function runClonerCore(tabId, requestedOptions = {}) {
 
                 // Handle url()
                 content = content.replace(urlRegex, (match, url) => {
-                    if (url.startsWith('data:') || url.startsWith('blob:') || url.startsWith('#')) return match;
+                    if (url.startsWith('date:') || url.startsWith('blob:') || url.startsWith('#')) return match;
                     try {
                         const absUrl = new URL(url, asset.originalUrl).href;
                         const type = /\.(woff2?|ttf|otf|eot)/i.test(url) ? 'font' : 'image';
@@ -1159,7 +1159,7 @@ async function runClonerCore(tabId, requestedOptions = {}) {
             finalContents.set(asset.originalUrl, content);
             return content;
         } catch (e) {
-            console.error(`Erro ao processar ${asset.originalUrl}:`, e);
+            console.error(`Error processing ${asset.originalUrl}:`, e);
             return null;
         }
     }
@@ -1193,7 +1193,7 @@ async function runClonerCore(tabId, requestedOptions = {}) {
             assertNotCancelled();
             downloadedCount++;
             const progress = 35 + Math.round((downloadedCount / allAssets.length) * 65);
-            notifyPopup(`Baixando: ${asset.filename}`, progress);
+            notifyPopup(`Downloading: ${asset.filename}`, progress);
             
             let data;
             if (finalContents.has(asset.originalUrl)) {
@@ -1220,7 +1220,7 @@ async function runClonerCore(tabId, requestedOptions = {}) {
             }
             successfulDownloads++;
         } catch (err) {
-            console.warn("Erro ao baixar ativo:", asset.originalUrl, err);
+            console.warn("Asset download error:", asset.originalUrl, err);
             failedDownloads.push({
                 url: asset.originalUrl,
                 localPath: asset.localPath,
@@ -1263,13 +1263,13 @@ async function runClonerCore(tabId, requestedOptions = {}) {
         data: JSON.stringify(report, null, 2)
     });
 
-    notifyPopup("Compactando clone...", 99);
+    notifyPopup("Compressing clone...", 99);
     assertNotCancelled();
     const finalizedZip = await sendZipMessage({
         action: "zipFinalize",
         filename: `catCloner/${folderName}.zip`
     });
-    if (!finalizedZip.blobUrl) throw new Error("O compactador não retornou o arquivo ZIP.");
+    if (!finalizedZip.blobUrl) throw new Error("The compression engine did not return a ZIP file.");
     await chrome.downloads.download({
         url: finalizedZip.blobUrl,
         filename: `catCloner/${folderName}.zip`,
@@ -1278,7 +1278,7 @@ async function runClonerCore(tabId, requestedOptions = {}) {
     });
 
     const completionText = failedDownloads.length > 0
-        ? `Clone concluído com ${failedDownloads.length} recurso(s) ausente(s).`
-        : "Clone concluído!";
+        ? `Clone finished with ${failedDownloads.length} missing resource(s).`
+        : "Clone complete!";
     notifyPopup(completionText, 100);
 }
