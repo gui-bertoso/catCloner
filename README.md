@@ -1,38 +1,34 @@
-# catCloner - Web Scraper Extension
+# duckCloner
 
-A browser extension designed for automated web data extraction and organization.
+Save pages and browsing sequences as offline ZIPs. A small Manifest V3 extension for Chrome and Chromium-based browsers, written in plain JavaScript.
 
-## Preview
+Previously named **catCloner**. The GitHub repository is now **[duck-cloner](https://github.com/gui-bertoso/duck-cloner)**.
 
-![Extension Screenshot](./screenshot.png)
+![Snapshot interface](screenshot.png)
 
-## Overview
+## Two ways to capture
 
-This project demonstrates the development of a custom web scraping solution focused on collecting, processing, and structuring information from web pages.
+**Snapshot** saves the active page, its assets and linked pages within the page limit and link depth you choose. A depth of `0` saves only the current page.
 
-## Features
+**Visual flow** records a sequence as you browse one tab. Stable pages are captured automatically; you can also capture a page manually, remove individual steps, or clear the recording. Finish the session to download its ZIP.
 
-- Automated data extraction from websites
-- Browser extension architecture
-- Data filtering and processing
-- Structured data organization
-- Custom scraping workflows
+## Install
 
-## Technologies
+1. Download the extension ZIP and extract it into a folder you will keep.
+2. Open `chrome://extensions` (or `edge://extensions`).
+3. Enable **Developer mode**, select **Load unpacked**, and choose the folder containing `manifest.json`.
+4. Open an HTTP or HTTPS page and select duckCloner from the extensions menu.
 
-- JavaScript / TypeScript
-- Browser Extension APIs
-- HTML & CSS
-- Web scraping techniques
-- Data processing
+To update an unpacked installation, replace the files in its existing folder and select **Reload** on the extensions page. Existing recording storage keys are preserved.
 
-## License
+## What to expect
 
-The author's code is available under the [MIT License](LICENSE).
-Third-party dependencies retain their own licenses.
+The extension downloads page assets, rewrites local paths and neutralizes scripts for offline browsing. An offline copy will not reproduce every feature of a live website. Browser settings pages cannot be captured.
 
-## Contact
+Form values and known personal-information patterns are redacted heuristically. This is not a guarantee that every sensitive detail is removed: use sample data for recordings and review the archive before sharing it. CAPTCHA and login checks must be completed normally in the source page.
 
-Developer: Guilherme da Silva Bertoso
+## Development
 
-Contact: gui.bertoso.dev@gmail.com
+No build step is required. Load this directory as an unpacked extension and reload it after editing. The popup is in `popup.html`, `style.css` and `popup.js`; capture engines are under `engines/` and `core/`.
+
+MIT licensed. See [LICENSE](LICENSE). JSZip and other third-party code retain their original notices.

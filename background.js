@@ -1,6 +1,6 @@
 importScripts('core/core.js', 'core/zipEngine.js', 'engines/privacyEngine.js', 'core/flowEngine.js');
 
-console.log(`catCloner ${CatClonerCore.version} modular engine initialized.`);
+console.log(`duckCloner ${CatClonerCore.version} initialized.`);
 
 const ensureZipDocument = CatClonerZipEngine.ensureDocument;
 const sendZipMessage = CatClonerZipEngine.send;
@@ -169,144 +169,12 @@ chrome.tabs.onRemoved.addListener(async tabId => {
 });
 
 async function runCloner(tabId, requestedOptions = {}) {
-    await showCloneOverlayV4(tabId);
+    await showCloneOverlay(tabId);
     try {
         return await runClonerCore(tabId, requestedOptions);
     } finally {
         await hideCloneOverlay(tabId);
     }
-}
-
-async function showCloneOverlay(tabId) {
-    await chrome.scripting.executeScript({
-        target: { tabId },
-        func: () => {
-            const overlayId = "catcloner-working-overlay";
-            if (document.getElementById(overlayId)) return;
-
-            const host = document.createElement("div");
-            host.id = overlayId;
-            host.style.cssText = [
-                "all:initial",
-                "position:fixed",
-                "inset:0",
-                "z-index:2147483647",
-                "display:grid",
-                "place-items:center",
-                "pointer-events:auto"
-            ].join("!important;") + "!important;";
-            const shadow = host.attachShadow({ mode: "open" });
-            shadow.innerHTML = `
-                <style>
-                    :host {
-                        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-                    }
-                    .backdrop {
-                        position: absolute;
-                        inset: 0;
-                        background: #101014;
-                    }
-                    .card {
-                        position: relative;
-                        width: min(330px, calc(100vw - 40px));
-                        padding: 28px 24px 24px;
-                        border: 1px solid rgba(255,255,255,.14);
-                        border-radius: 22px;
-                        background: #19191f;
-                        color: #fffffe;
-                        box-shadow: 0 24px 80px rgba(0,0,0,.45);
-                        text-align: center;
-                    }
-                    .workshop {
-                        position: relative;
-                        width: 150px;
-                        height: 105px;
-                        margin: 0 auto 12px;
-                    }
-                    .cat {
-                        position: absolute;
-                        left: 22px;
-                        bottom: 13px;
-                        font-size: 64px;
-                        line-height: 1;
-                        filter: drop-shadow(0 7px 8px rgba(0,0,0,.3));
-                        animation: cat-bounce .52s ease-in-out infinite alternate;
-                    }
-                    .hammer {
-                        position: absolute;
-                        right: 19px;
-                        top: 4px;
-                        font-size: 52px;
-                        line-height: 1;
-                        transform-origin: 18% 82%;
-                        animation: hammer-hit .52s cubic-bezier(.7,0,.3,1) infinite;
-                    }
-                    .bench {
-                        position: absolute;
-                        left: 18px;
-                        right: 18px;
-                        bottom: 4px;
-                        height: 13px;
-                        border-radius: 8px;
-                        background: linear-gradient(90deg, #ff8e53, #ff6b6b);
-                        box-shadow: 0 5px 0 #9d3d36;
-                    }
-                    .spark {
-                        position: absolute;
-                        right: 38px;
-                        bottom: 19px;
-                        color: #ffd166;
-                        font-size: 25px;
-                        animation: spark .52s ease-out infinite;
-                    }
-                    h2 { margin: 0; font-size: 20px; letter-spacing: -.3px; }
-                    p { margin: 7px 0 0; color: #a7a9be; font-size: 13px; }
-                    .dots::after { content: ""; animation: dots 1.2s steps(4,end) infinite; }
-                    @keyframes hammer-hit {
-                        0%, 22% { transform: rotate(-38deg); }
-                        64%, 100% { transform: rotate(18deg); }
-                    }
-                    @keyframes cat-bounce { to { transform: translateY(-3px); } }
-                    @keyframes spark {
-                        0%, 55% { opacity: 0; transform: scale(.3); }
-                        65% { opacity: 1; transform: scale(1.2); }
-                        100% { opacity: 0; transform: translate(8px,-8px) scale(.6); }
-                    }
-                    @keyframes dots {
-                        0% { content: ""; } 25% { content: "."; }
-                        50% { content: ".."; } 75%,100% { content: "..."; }
-                    }
-                    @media (prefers-reduced-motion: reduce) {
-                        .cat, .hammer, .spark, .dots::after { animation: none; }
-                    }
-                </style>
-                <div class="backdrop"></div>
-                <section class="card" role="status" aria-live="polite">
-                    <div class="workshop" aria-hidden="true">
-                        <div class="cat">🐱</div>
-                        <div class="hammer">🔨</div>
-                        <div class="spark">✦</div>
-                        <div class="bench"></div>
-                    </div>
-                    <h2>catCloner working here<span class="dots"></span></h2>
-                    <p>Building your offline copy. Keep this tab open.</p>
-                </section>
-            `;
-            const attachOverlay = () => {
-                if (!host.isConnected) {
-                    (document.body || document.documentElement).appendChild(host);
-                }
-            };
-            attachOverlay();
-
-            window.__catClonerOverlayObserver?.disconnect();
-            window.__catClonerOverlayObserver = new MutationObserver(attachOverlay);
-            window.__catClonerOverlayObserver.observe(document.documentElement, {
-                childList: true,
-                subtree: true
-            });
-        }
-    });
 }
 
 async function hideCloneOverlay(tabId) {
@@ -320,7 +188,7 @@ async function hideCloneOverlay(tabId) {
     }).catch(() => {});
 }
 
-async function showCloneOverlayV4(tabId) {
+async function showCloneOverlay(tabId) {
     await hideCloneOverlay(tabId);
     await chrome.scripting.executeScript({ target: { tabId }, func: () => {
         const host = document.createElement('div');
@@ -328,12 +196,38 @@ async function showCloneOverlayV4(tabId) {
         host.style.cssText = 'all:initial!important;position:fixed!important;right:18px!important;bottom:18px!important;z-index:2147483647!important;pointer-events:none!important';
         const shadow = host.attachShadow({ mode: 'open' });
         shadow.innerHTML = `<style>
-        :host{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}.card{width:min(340px,calc(100vw - 36px));padding:14px;border:1px solid rgba(255,130,98,.28);border-radius:16px;background:rgba(9,11,16,.94);color:#f7f8fb;box-shadow:0 18px 55px rgba(0,0,0,.42),inset 0 1px rgba(255,255,255,.06);backdrop-filter:blur(18px);animation:enter .25s ease-out}.head,.brand,.stage,.controls{display:flex;align-items:center}.head{justify-content:space-between;gap:12px}.controls{gap:8px}.brand{gap:8px;font-size:12px;font-weight:800}.cat{font-size:19px;animation:bob .8s ease-in-out infinite alternate}.badge{padding:3px 6px;border:1px solid rgba(255,115,92,.25);border-radius:99px;color:#ff927f;font-size:7px;text-transform:uppercase}.percent{color:#ff927f;font:800 11px ui-monospace,monospace}.cancel{pointer-events:auto;padding:4px 7px;border:1px solid rgba(255,115,92,.3);border-radius:7px;background:transparent;color:#ff927f;font:700 8px system-ui;cursor:pointer}.stage{justify-content:space-between;margin:11px 0 7px}.stage strong{max-width:260px;overflow:hidden;color:#dce0e8;font-size:10px;text-overflow:ellipsis;white-space:nowrap}.live{width:6px;height:6px;border-radius:50%;background:#5bd6a2;box-shadow:0 0 8px #5bd6a2;animation:pulse 1s infinite}.track{height:4px;overflow:hidden;border-radius:99px;background:rgba(255,255,255,.08)}.bar{width:2%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#ff735c,#ffb45f);transition:width .25s}.terminal{height:92px;margin-top:10px;overflow:hidden;padding:8px 9px;border:1px solid rgba(255,255,255,.065);border-radius:10px;background:#06080c;font:9px/1.55 ui-monospace,Consolas,monospace}.line{overflow:hidden;color:#788293;text-overflow:ellipsis;white-space:nowrap;animation:linein .2s ease-out}.tag{color:#ff8c77}.ok{color:#5bd6a2}.cursor{display:inline-block;width:5px;height:10px;margin-left:3px;background:#ff8c77;vertical-align:-2px;animation:blink .8s steps(1) infinite}@keyframes enter{from{opacity:0;transform:translateY(8px) scale(.98)}}@keyframes linein{from{opacity:0;transform:translateY(4px)}}@keyframes bob{to{transform:translateY(-2px)}}@keyframes pulse{50%{opacity:.35}}@keyframes blink{50%{opacity:0}}@media(prefers-reduced-motion:reduce){.card,.cat,.live,.cursor,.line{animation:none}}
-        </style><section class="card" role="status" aria-live="polite"><div class="head"><div class="brand"><span class="cat">🐱</span><span>catCloner</span><span class="badge">4.0</span></div><div class="controls"><span class="percent">2%</span><button class="cancel" type="button">Cancel</button></div></div><div class="stage"><strong>Initializing modular engines</strong><span class="live"></span></div><div class="track"><div class="bar"></div></div><div class="terminal"><div class="lines"><div class="line"><span class="tag">[CORE]</span> session started <span class="ok">OK</span></div><div class="line"><span class="tag">[SAFE]</span> data protection active <span class="ok">OK</span></div><div class="line current"><span class="tag">[SCAN]</span> analyzing page<span class="cursor"></span></div></div></div></section>`;
+            :host { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+            * { box-sizing: border-box; }
+            .capture { width: min(330px, calc(100vw - 36px)); padding: 14px; border: 1px solid #232620; border-radius: 4px; background: #f6f4ee; color: #232620; font-size: 12px; }
+            .head, .stage { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+            .head { align-items: center; margin-bottom: 12px; }
+            .brand { font-size: 13px; font-weight: 700; }
+            .stage strong { font-size: 12px; line-height: 1.5; font-weight: 500; overflow-wrap: anywhere; }
+            .percent { flex-shrink: 0; color: #65685f; font-variant-numeric: tabular-nums; }
+            .track { height: 4px; margin: 10px 0; background: #d6d7cd; }
+            .bar { width: 0; height: 100%; background: #232620; }
+            .hint { margin: 0; color: #65685f; font-size: 11px; line-height: 1.5; }
+            .cancel { pointer-events: auto; padding: 5px 8px; border: 1px solid #b8bbb0; border-radius: 3px; background: transparent; color: #232620; font: inherit; cursor: pointer; }
+            .cancel:hover { background: #eae9e1; }
+            .cancel:focus-visible { outline: 2px solid #232620; outline-offset: 3px; }
+            .cancel:disabled { opacity: .5; cursor: default; }
+            @media (forced-colors: active) { .bar { background: Highlight; } }
+        </style>
+        <section class="capture" role="status" aria-live="polite">
+            <div class="head"><span class="brand">duckCloner</span><button class="cancel" type="button">Cancel</button></div>
+            <div class="stage"><strong>Preparing capture…</strong><span class="percent">0%</span></div>
+            <div class="track" role="progressbar" aria-label="Capture progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="bar"></div></div>
+            <p class="hint">Keep this page open until the download starts.</p>
+        </section>`;
         (document.body || document.documentElement).appendChild(host);
         shadow.querySelector('.cancel').addEventListener('click', () => {
-            shadow.querySelector('.cancel').textContent = 'Canceling…';
-            chrome.runtime.sendMessage({ action: 'cancelClone' }).catch(() => {});
+            const button = shadow.querySelector('.cancel');
+            button.disabled = true;
+            button.textContent = 'Canceling…';
+            chrome.runtime.sendMessage({ action: 'cancelClone' }).catch(() => {
+                button.disabled = false;
+                button.textContent = 'Retry cancel';
+            });
         });
     }});
 }
@@ -343,23 +237,10 @@ async function updateCloneOverlay(tabId, text, progress) {
         const shadow = document.getElementById('catcloner-working-overlay')?.shadowRoot;
         if (!shadow) return;
         const safeProgress = Math.max(0, Math.min(100, Number(value) || 0));
-        shadow.querySelector('.stage strong').textContent = message || 'Processing page';
+        shadow.querySelector('.stage strong').textContent = message || 'Capturing page…';
         shadow.querySelector('.percent').textContent = `${Math.round(safeProgress)}%`;
-        shadow.querySelector('.bar').style.width = `${Math.max(2, safeProgress)}%`;
-        const firstWord = String(message || '').split(/[\s:]/)[0].toLowerCase();
-        const tags = { baixando:'ASSET', explorando:'LINK', consolidando:'CORE', compactando:'ZIP', captcha:'PAUSED', iniciando:'SCAN' };
-        const tag = tags[firstWord] || 'ENGINE';
-        const lines = shadow.querySelector('.lines');
-        lines.querySelector('.current')?.remove();
-        const completed = document.createElement('div');
-        completed.className = 'line';
-        const label = String(message || '').replace(/https?:\/\/\S+/g, '[url]').substring(0, 68);
-        completed.textContent = `[${tag}] ${label} OK`;
-        lines.appendChild(completed);
-        const current = document.createElement('div'); current.className = 'line current';
-        current.innerHTML = '<span class="tag">[NEXT]</span> processing<span class="cursor"></span>';
-        lines.appendChild(current);
-        while (lines.children.length > 6) lines.firstElementChild.remove();
+        shadow.querySelector('.bar').style.width = `${safeProgress}%`;
+        shadow.querySelector('.track').setAttribute('aria-valuenow', String(Math.round(safeProgress)));
     }}).catch(() => {});
 }
 
@@ -576,7 +457,7 @@ async function runClonerCore(tabId, requestedOptions = {}) {
                         if (absUrl.startsWith('http') && !absUrl.startsWith(origin)) return absUrl;
                         if (isLocal(url)) return url;
 
-                        console.warn('catCloner: Remote resource detected (not cloned) ->', absUrl);
+                        console.warn('duckCloner: Remote resource detected (not cloned) ->', absUrl);
                         return new URL(url, origin).href;
                     } catch (e) {
                         return url;
@@ -664,7 +545,7 @@ async function runClonerCore(tabId, requestedOptions = {}) {
                     try {
                         Object.defineProperty(Location.prototype, prop, {
                             get: function() { return value; },
-                            set: function(v) { console.log('catCloner: Tentativa de mudar location.' + prop + ' ->', v); },
+                            set: function(v) { console.log('duckCloner: Blocked location change: ' + prop + ' ->', v); },
                             enumerable: true, configurable: true
                         });
                     } catch(e) {}
@@ -693,11 +574,11 @@ async function runClonerCore(tabId, requestedOptions = {}) {
                 let fakeState = null;
                 window.history.pushState = function(state, title, url) {
                     fakeState = state;
-                    console.log('catCloner: pushState bloqueado ->', url);
+                    console.log('duckCloner: Blocked pushState ->', url);
                 };
                 window.history.replaceState = function(state, title, url) {
                     fakeState = state;
-                    console.log('catCloner: replaceState bloqueado ->', url);
+                    console.log('duckCloner: Blocked replaceState ->', url);
                 };
                 try {
                     Object.defineProperty(window.history, 'state', {
@@ -707,12 +588,12 @@ async function runClonerCore(tabId, requestedOptions = {}) {
                 } catch(e) {}
                 
                 // Impedir redirecionamentos e reload
-                Location.prototype.assign = function(url) { console.log('catCloner: assign bloqueado ->', url); };
-                Location.prototype.replace = function(url) { console.log('catCloner: replace bloqueado ->', url); };
-                Location.prototype.reload = function() { console.log('catCloner: reload bloqueado'); };
-                window.location.assign = function(url) { console.log('catCloner: assign bloqueado ->', url); };
-                window.location.replace = function(url) { console.log('catCloner: replace bloqueado ->', url); };
-                window.location.reload = function() { console.log('catCloner: reload bloqueado'); };
+                Location.prototype.assign = function(url) { console.log('duckCloner: Blocked assign ->', url); };
+                Location.prototype.replace = function(url) { console.log('duckCloner: Blocked replace ->', url); };
+                Location.prototype.reload = function() { console.log('duckCloner: Blocked reload'); };
+                window.location.assign = function(url) { console.log('duckCloner: Blocked assign ->', url); };
+                window.location.replace = function(url) { console.log('duckCloner: Blocked replace ->', url); };
+                window.location.reload = function() { console.log('duckCloner: Blocked reload'); };
                 
                 // Mock additional document properties
                 try {
@@ -773,7 +654,7 @@ async function runClonerCore(tabId, requestedOptions = {}) {
 
                         if (!isLocal(absUrl) && !absUrl.startsWith('#') && !absUrl.startsWith('javascript:')) {
                             e.preventDefault();
-                            console.log('catCloner: Clique bloqueado ->', absUrl);
+                            console.log('duckCloner: Blocked click ->', absUrl);
                         }
                     }
                 }, true);
@@ -790,7 +671,7 @@ async function runClonerCore(tabId, requestedOptions = {}) {
                             return typeof val === 'function' ? val.bind(target) : val;
                         },
                         set(target, prop, value) {
-                            console.log('catCloner: Tentativa de mudar location.' + prop + ' ->', value);
+                            console.log('duckCloner: Blocked location change: ' + prop + ' ->', value);
                             return true;
                         }
                     });
@@ -837,7 +718,7 @@ async function runClonerCore(tabId, requestedOptions = {}) {
                 });
                 observer.observe(document.documentElement, { childList: true, subtree: true });
                 
-                console.log('catCloner offline compatibility engine applied');
+                console.log('duckCloner offline compatibility engine applied');
             })();
         `;
         snapshotDocument.head.prepend(fixScript);
@@ -863,7 +744,7 @@ async function runClonerCore(tabId, requestedOptions = {}) {
 
     const mainCaptchaResolved = await waitForCaptchaResolution(tabId);
     assertNotCancelled();
-    if (mainCaptchaResolved) await showCloneOverlayV4(tabId);
+    if (mainCaptchaResolved) await showCloneOverlay(tabId);
     await loadCaptureEngines(tabId);
     const injectionResults = await chrome.scripting.executeScript({
         target: { tabId: tabId },
@@ -984,11 +865,11 @@ async function runClonerCore(tabId, requestedOptions = {}) {
                 });
                 
                 await waitForCaptchaResolution(subTab.id);
-                await showCloneOverlayV4(subTab.id);
+                await showCloneOverlay(subTab.id);
                 let readiness = await waitForRenderedPage(subTab.id, link);
                 if (readiness.captcha) {
                     await waitForCaptchaResolution(subTab.id);
-                    await showCloneOverlayV4(subTab.id);
+                    await showCloneOverlay(subTab.id);
                     readiness = await waitForRenderedPage(subTab.id, link);
                 }
                 if (!readiness.ready) {
@@ -1267,12 +1148,12 @@ async function runClonerCore(tabId, requestedOptions = {}) {
     assertNotCancelled();
     const finalizedZip = await sendZipMessage({
         action: "zipFinalize",
-        filename: `catCloner/${folderName}.zip`
+        filename: `duckCloner/${folderName}.zip`
     });
     if (!finalizedZip.blobUrl) throw new Error("The compression engine did not return a ZIP file.");
     await chrome.downloads.download({
         url: finalizedZip.blobUrl,
-        filename: `catCloner/${folderName}.zip`,
+        filename: `duckCloner/${folderName}.zip`,
         conflictAction: "uniquify",
         saveAs: false
     });

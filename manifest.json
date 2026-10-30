@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "catCloner",
-  "version": "4.3.2",
-  "version_name": "4.3.2",
+  "name": "duckCloner",
+  "version": "4.4.0",
+  "version_name": "4.4.0",
   "description": "Create private, navigable visual snapshots for offline browsing",
   "permissions": [
     "activeTab",

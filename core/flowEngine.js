@@ -219,9 +219,9 @@
         }
         assertActive();
         await CatClonerZipEngine.send({ action: 'zipAddFile', path: 'flow-report.json', data: JSON.stringify({ engineVersion: CatClonerCore.version, steps: steps.map(({ title, url, order }) => ({ title, url: CatClonerPrivacyEngine.sanitizeUrl(url), order })), assets: assets.size, failures: failures.map(failure => ({ ...failure, url: CatClonerPrivacyEngine.sanitizeUrl(failure.url) })) }, null, 2) });
-        const result = await CatClonerZipEngine.send({ action: 'zipFinalize', filename: 'catCloner/visual-flow.zip' });
+        const result = await CatClonerZipEngine.send({ action: 'zipFinalize', filename: 'duckCloner/visual-flow.zip' });
         if (!result.blobUrl) throw new Error('The compression engine did not return the flow.');
-        await chrome.downloads.download({ url: result.blobUrl, filename: 'catCloner/visual-flow.zip', conflictAction: 'uniquify', saveAs: false });
+        await chrome.downloads.download({ url: result.blobUrl, filename: 'duckCloner/visual-flow.zip', conflictAction: 'uniquify', saveAs: false });
         return { steps: steps.length, failures: failures.length };
     }
 

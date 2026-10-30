@@ -1,269 +1,52 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>catCloner</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>duckCloner</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-<main class="app-shell">
-
-<header class="topbar">
-<div class="brand">
-<div class="logo-wrap">
-<img src="icons/icon-4.png" alt="" class="logo-img">
-</div>
-
-<div>
-<div class="brand-line">
-<h1>catCloner</h1>
-<span class="version">4.3.2</span>
-</div>
-
-<p>Offline visual snapshot</p>
-</div>
-</div>
-
-<span class="status-dot" title="Engine ready"></span>
-</header>
-
-
-<section class="site-card">
-<div class="site-icon" id="siteInitial">•</div>
-
-<div class="site-copy">
-<span class="eyebrow">Current page</span>
-<strong id="pageTitleDisplay">Loading page…</strong>
-<span id="pageUrlDisplay">Waiting for URL</span>
-</div>
-</section>
-
-
-<section class="panel">
-
-<div class="section-heading">
-<span class="eyebrow">Capture mode</span>
-<h2>How do you want to capture?</h2>
-</div>
-
-
-<div class="mode-grid">
-
-<button id="snapshotModeBtn" type="button" class="mode-card selected" aria-pressed="true">
-
-<svg viewBox="0 0 24 24">
-<rect x="3" y="4" width="18" height="16" rx="2"></rect>
-<path d="M3 9h18M8 4v5"></path>
-</svg>
-
-<span>
-<strong>Snapshot</strong>
-<small>Page + internal links</small>
-</span>
-
-<i></i>
-
-</button>
-
-
-<button id="flowModeBtn" type="button" class="mode-card" aria-pressed="false">
-
-<svg viewBox="0 0 24 24">
-<path d="M6 3v12M18 9v12M6 15a6 6 0 0 0 6 6h6M6 9a6 6 0 0 1 6-6h6"></path>
-</svg>
-
-<span>
-<strong>Visual Flow</strong>
-<small>Capture screens in sequence</small>
-</span>
-
-<i></i>
-
-</button>
-
-</div>
-</section>
-
-
-<section id="snapshotPanel" class="panel compact">
-
-<div class="section-heading inline">
-
-<div>
-<span class="eyebrow">Scope</span>
-<h2>Capture limits</h2>
-</div>
-
-<span class="safe-pill">Privacy active</span>
-
-</div>
-
-
-<div class="clone-options">
-
-<label>
-<span>Pages in ZIP</span>
-<small>Includes the homepage</small>
-<input id="pageLimit" type="number" min="1" max="100" value="6">
-</label>
-
-
-<label>
-<span>Depth</span>
-<small>Internal link levels</small>
-<input id="maxDepth" type="number" min="0" max="5" value="1">
-</label>
-
-</div>
-
-</section>
-
-
-<section id="flowPanel" class="panel flow-panel hidden">
-
-<div class="section-heading inline">
-
-<div>
-<span class="eyebrow">Visual session</span>
-<h2>Captured steps</h2>
-</div>
-
-<span id="flowRecorderState" class="safe-pill">Stopped</span>
-
-</div>
-
-
-<div id="flowSteps" class="flow-steps">
-<p>No steps captured.</p>
-</div>
-
-
-<div class="flow-actions">
-
-<button id="flowStartBtn" type="button">Start recording</button>
-
-<button id="flowCaptureBtn" type="button">
-+ Capture now
-</button>
-
-<button id="flowFinishBtn" type="button">
-Finish and download
-</button>
-
-<button id="flowResetBtn" class="danger-btn" type="button">
-Cancel and clear
-</button>
-
-</div>
-
-
-<p class="flow-warning">
-After starting, every stable page loaded in this tab will be captured automatically.
-Use fictional data only.
-</p>
-
-</section>
-
-
-<div class="engine-strip">
-<span>HTML</span>
-<span>CSS</span>
-<span>IMG</span>
-<span>JS Safe</span>
-<span>Video</span>
-</div>
-
-
-<button id="cloneBtn" class="primary-btn">
-
-<span class="button-icon">
-<svg viewBox="0 0 24 24">
-<path d="M12 3v12m-5-5 5 5 5-5M5 21h14"></path>
-</svg>
-</span>
-
-
-<span class="button-copy">
-
-<strong>Capture page</strong>
-
-<small>
-Generate offline ZIP package
-</small>
-
-</span>
-
-
-<svg class="arrow" viewBox="0 0 24 24">
-<path d="m9 18 6-6-6-6"></path>
-</svg>
-
-</button>
-
-
-<section id="statusMessage" class="status-box hidden" aria-live="polite">
-
-<div class="status-header">
-
-<div class="status-copy">
-
-<span class="spinner"></span>
-
-<div>
-<span class="eyebrow">Processing</span>
-<strong id="statusText">Preparing capture…</strong>
-</div>
-
-</div>
-
-
-<span id="progressPercent" class="progress-percent">
-0%
-</span>
-
-
-</div>
-
-
-<div class="progress-track">
-<div id="progressBar" class="progress-bar"></div>
-</div>
-
-
-<div class="status-footer">
-
-<p id="statusHint">
-Keep the tab open during the process.
-</p>
-
-<button id="cancelCloneBtn" type="button">
-Cancel
-</button>
-
-</div>
-
-</section>
-
-
-<footer>
-
-<span>
-<i></i>
-Modular engines active
-</span>
-
-<span>
-Release
-</span>
-
-</footer>
-
-
-</main>
-
-<script src="popup.js"></script>
-
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand"><img src="icons/duck.svg" width="28" height="28" alt=""><h1>duckCloner</h1></div>
+      <span id="version" class="version">4.4.0</span>
+    </header>
+    <section class="page-context" aria-label="Current page">
+      <span class="section-label">CURRENT PAGE</span>
+      <strong id="pageTitleDisplay">Reading the active tab…</strong>
+      <span id="pageUrlDisplay" class="page-url">Waiting for URL</span>
+    </section>
+    <p id="pageNotice" class="notice hidden" role="status"></p>
+    <div class="mode-switch" role="group" aria-label="Capture mode">
+      <button id="snapshotModeBtn" type="button" class="mode-button selected" aria-pressed="true" aria-controls="snapshotPanel">Snapshot</button>
+      <button id="flowModeBtn" type="button" class="mode-button" aria-pressed="false" aria-controls="flowPanel">Visual flow</button>
+    </div>
+    <section id="snapshotPanel" class="capture-panel" aria-label="Snapshot settings">
+      <p class="help">Save this page and its linked pages for offline browsing.</p>
+      <div class="settings">
+        <label for="pageLimit"><span>Page limit<small id="pageLimitHelp">Including this page</small></span><input id="pageLimit" type="number" min="1" max="100" value="6" aria-describedby="pageLimitHelp"></label>
+        <label for="maxDepth"><span>Link depth<small id="maxDepthHelp">0 saves only this page</small></span><input id="maxDepth" type="number" min="0" max="5" value="1" aria-describedby="maxDepthHelp"></label>
+      </div>
+      <button id="cloneBtn" class="primary-button" type="button"><span class="button-copy"><strong>Save snapshot</strong><small>Download ZIP</small></span><span aria-hidden="true">↓</span></button>
+    </section>
+    <section id="flowPanel" class="capture-panel hidden" aria-label="Visual flow recorder">
+      <p class="help">Record a sequence of pages as you browse this tab.</p>
+      <div class="flow-heading"><h2>Saved steps <span id="stepCount">0</span></h2><span id="flowRecorderState" class="recorder-state">Not recording</span></div>
+      <div id="flowSteps" class="flow-steps"><p class="empty">Your recorded pages will appear here.</p></div>
+      <div class="flow-actions"><button id="flowStartBtn" type="button">Start recording</button><button id="flowCaptureBtn" type="button" disabled>Capture this page</button></div>
+      <button id="flowFinishBtn" class="primary-button" type="button" disabled>Finish &amp; download ZIP <span aria-hidden="true">↓</span></button>
+      <button id="flowResetBtn" class="text-button danger" type="button" disabled>Clear recording</button>
+      <p class="footnote">Stable pages are saved automatically while recording. Use sample data and review captures before sharing.</p>
+    </section>
+    <p id="feedback" class="feedback hidden" role="status"></p>
+    <section id="statusMessage" class="capture-status hidden" aria-live="polite" aria-label="Capture progress">
+      <div class="status-heading"><strong id="statusText">Preparing capture…</strong><span id="progressPercent">0%</span></div>
+      <div id="progressTrack" class="progress-track" role="progressbar" aria-label="Capture progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progressBar" class="progress-bar"></div></div>
+      <div class="status-footer"><p id="statusHint">Keep the page open until the download starts.</p><button id="cancelCloneBtn" type="button" class="text-button">Cancel</button></div>
+    </section>
+    <footer>Offline copies. On your device.</footer>
+  </main>
+  <script src="popup.js"></script>
 </body>
 </html>

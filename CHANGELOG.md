@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.4.0 — 2026-10-30
+
+- Renamed the application to duckCloner and the repository to duck-cloner.
+- Replaced nested cards, tiny badges and gradients with a compact, readable popup.
+- Added a duck icon and a plain capture notice with actual progress.
+- Removed the decorative terminal and unused full-page capture overlay.
+- Clarified empty, recording, progress, cancellation and error states.
+- Disabled capture on unsupported pages and unavailable recording actions.
+- Kept existing recording storage keys and capture-engine APIs for compatibility.
+
 ## 4.3.2 — 2026-08-06
 
 ### Changes
